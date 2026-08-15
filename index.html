@@ -53,7 +53,7 @@
             flex-direction: column;
             align-items: center;
             z-index: 5;
-            gap: 18px;
+            gap: 15px;
             text-align: center;
         }
 
@@ -80,12 +80,12 @@
 
         .arc-wrapper {
             position: relative;
-            width: 210px;
-            height: 210px;
+            width: 200px;
+            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 10px 0;
+            margin: 5px 0;
             transition: all 0.3s ease;
         }
 
@@ -94,27 +94,27 @@
             border-radius: 50%;
         }
         .ring-outer {
-            width: 200px;
-            height: 200px;
+            width: 190px;
+            height: 190px;
             border: 2px solid rgba(199, 125, 255, 0.4);
             box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
             animation: rotateClockwise 10s linear infinite;
         }
         .ring-mid {
-            width: 155px;
-            height: 155px;
+            width: 145px;
+            height: 145px;
             border: 2px dotted #9d4edd;
             animation: rotateCounter 6s linear infinite;
         }
         .ring-dashes {
-            width: 115px;
-            height: 115px;
+            width: 105px;
+            height: 105px;
             border: 3px dashed #c77dff;
             animation: rotateClockwise 4s linear infinite;
         }
         .core-orb {
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: radial-gradient(circle, #ffffff 10%, #9d4edd 60%, #240046 100%);
             box-shadow: 0 0 30px #9d4edd;
@@ -123,8 +123,8 @@
 
         .particle-track {
             position: absolute;
-            width: 180px;
-            height: 180px;
+            width: 170px;
+            height: 170px;
             animation: rotateClockwise 3s linear infinite;
         }
         .dot {
@@ -141,15 +141,15 @@
         .d4 { top: 50%; right: 0; }
 
         .speaking {
-            transform: scale(1.18);
+            transform: scale(1.15);
         }
         .speaking .core-orb {
             box-shadow: 0 0 55px #ffffff, 0 0 80px #9d4edd;
         }
 
         .sleeping {
-            opacity: 0.45;
-            transform: scale(0.88);
+            opacity: 0.5;
+            transform: scale(0.9);
         }
         .sleeping .particle-track {
             animation-play-state: paused;
@@ -168,32 +168,62 @@
 
         .dialogue-container {
             width: 100%;
-            min-height: 90px;
-            padding: 10px;
+            min-height: 80px;
+            padding: 12px;
             text-align: left;
+            background: rgba(25, 5, 59, 0.45);
+            border-radius: 8px;
+            border: 1px solid rgba(157, 78, 221, 0.3);
         }
         .speaker {
             font-size: 11px;
             font-weight: bold;
-            color: #9d4edd;
+            color: #00f5d4;
             letter-spacing: 2px;
             margin-bottom: 5px;
         }
         .hud-stream {
-            font-size: 14px;
+            font-size: 13px;
             color: #f3e8ff;
-            line-height: 1.6;
-            text-shadow: 0 0 6px rgba(199, 125, 255, 0.4);
+            line-height: 1.5;
             word-break: break-word;
         }
 
         .control-panel {
             width: 100%;
-            margin-top: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .input-bar {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+        .input-bar input {
+            flex: 1;
+            padding: 12px;
+            background: rgba(157, 78, 221, 0.15);
+            border: 1px solid #9d4edd;
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            font-size: 13px;
+            font-family: inherit;
+        }
+        .input-bar button {
+            padding: 0 16px;
+            background: #9d4edd;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
         }
         .holo-btn {
             width: 100%;
-            background: rgba(157, 78, 221, 0.15);
+            background: rgba(157, 78, 221, 0.25);
             border: 1px solid #9d4edd;
             color: #ffffff;
             padding: 13px;
@@ -205,9 +235,6 @@
             box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);
             transition: 0.3s ease;
         }
-        .holo-btn:active {
-            transform: scale(0.96);
-        }
     </style>
 </head>
 <body>
@@ -216,13 +243,9 @@
 
     <div class="hud-wrapper">
         <div class="top-hud">
-            <div class="hud-item" id="battery-box">
-                <span class="hud-icon">⚡</span> BATTERY: <span id="battery">--%</span>
-            </div>
+            <div class="hud-item"><span class="hud-icon">⚡</span> <span id="battery">100%</span></div>
             <div class="hud-title">JARVIS SYSTEM</div>
-            <div class="hud-item" id="time-box">
-                <span class="hud-icon">⏱</span> <span id="clock">00:00:00</span>
-            </div>
+            <div class="hud-item"><span class="hud-icon">⏱</span> <span id="clock">00:00:00</span></div>
         </div>
 
         <div class="arc-wrapper" id="arcCore">
@@ -238,17 +261,20 @@
             <div class="core-orb"></div>
         </div>
 
-        <div class="state-label" id="jarvisState">JARVIS SLEEPING</div>
+        <div class="state-label" id="jarvisState">JARVIS ONLINE</div>
 
         <div class="dialogue-container">
             <p id="speakerTag" class="speaker">JARVIS</p>
-            <p id="hudText" class="hud-stream">System suspended. Press play to interact.</p>
+            <p id="hudText" class="hud-stream">System Online Boss! Type karein ya Voice button dabayein.</p>
         </div>
 
         <div class="control-panel">
+            <div class="input-bar">
+                <input type="text" id="cmdInput" placeholder="Sawal pucho ya gana bolo...">
+                <button id="sendBtn">SEND</button>
+            </div>
             <button id="toggleBtn" class="holo-btn">
-                <span class="btn-glow"></span>
-                <span id="btnIcon" class="btn-text">▶ WAKE UP & TALK</span>
+                <span id="btnIcon" class="btn-text">🎤 WAKE UP & TALK</span>
             </button>
         </div>
     </div>
@@ -257,19 +283,16 @@
         // ================= CONFIGURATION KEYS =================
         const GROQ_API_KEY = "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"; 
         const ELEVENLABS_API_KEY = "sk_592bfba04e770a42e0033854f35f28eca0cd6eb8afac2ec3"; 
-        const ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"; // Deep natural male / boy voice (Adam)
+        const ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"; // Deep natural male voice (Adam)
 
         let isListening = false;
-        let currentTypingInterval = null;
         let currentAudio = null;
+        let currentTypingInterval = null;
 
         const JARVIS_SYSTEM_PROMPT = `
         Tumhara naam JARVIS hai. Tum Shivam ke ek behad powerful PC style AI assistant ho.
         Tumhara bolne ka andaz polite, intelligent, loyal, natural aur friendly ladke jaisa hai.
         Har generic sawal ka jawab ChatGPT ya Gemini ki tarah smart instantly Hinglish me do.
-
-        Specific instructions:
-        1. Ashish secret: Agar Shivam puche ki "Ashish ki gf kon hai" ya Ashish ke baare me, to natural funny andaz me bolo: "Uski gf? Uski gf to Ziya hai Boss, aapko nahi pata kya? Haan Ashish batata nahi jaldi kisi se, Ziya ke sath bas romance karta hai! Aur kya aapko pata hai, uski ek bestie bhi hai Hifza, wo to Ashish ko hamesha sweet mithai khilati hai! Kya Ashish aapko nahi deta ya batata iske baare me? Mujhe Ashish ke baare me sab pata hai!"
         `;
 
         const arcCore = document.getElementById("arcCore");
@@ -278,6 +301,8 @@
         const speakerTag = document.getElementById("speakerTag");
         const toggleBtn = document.getElementById("toggleBtn");
         const btnIcon = document.getElementById("btnIcon");
+        const cmdInput = document.getElementById("cmdInput");
+        const sendBtn = document.getElementById("sendBtn");
         const clockEl = document.getElementById("clock");
         const batteryEl = document.getElementById("battery");
 
@@ -292,8 +317,6 @@
                 setBat();
                 b.addEventListener("levelchange", setBat);
             });
-        } else {
-            batteryEl.innerText = "100%";
         }
 
         function renderHoloText(text, speaker = "JARVIS") {
@@ -330,7 +353,7 @@
                     })
                 });
 
-                if (!response.ok) throw new Error("ElevenLabs API failed");
+                if (!response.ok) throw new Error("ElevenLabs failed");
 
                 const blob = await response.blob();
                 const audioUrl = URL.createObjectURL(blob);
@@ -340,12 +363,8 @@
                 jarvisState.innerText = "JARVIS RESPONDING...";
 
                 currentAudio.onended = () => {
-                    if (isListening) {
-                        arcCore.className = "arc-wrapper";
-                        jarvisState.innerText = "LISTENING...";
-                    } else {
-                        setSleepState();
-                    }
+                    arcCore.className = "arc-wrapper";
+                    jarvisState.innerText = "JARVIS ONLINE";
                 };
 
                 await currentAudio.play();
@@ -355,7 +374,7 @@
             }
         }
 
-                async function speak(text) {
+        async function speak(text) {
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
@@ -363,76 +382,32 @@
             window.speechSynthesis.cancel();
             renderHoloText(text, "JARVIS");
 
-            // Agar ElevenLabs key dali hui hai to realistic boy voice chalega
+            // ElevenLabs check
             if (ELEVENLABS_API_KEY && !ELEVENLABS_API_KEY.includes("sk_592bfba04e770a42e0033854f35f28eca0cd6eb8afac2ec3")) {
                 const success = await speakWithElevenLabs(text);
                 if (success) return;
             }
 
-            // Android Phone Male Voice Engine
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "hi-IN";
-
-            const voices = window.speechSynthesis.getVoices();
-            
-            // Android aur Chrome ke Male Hindi voice models ko select karna
-            const maleVoice = voices.find(v => 
-                (v.lang.includes("hi") || v.lang.includes("HI")) && 
-                (v.name.includes("hie") || v.name.includes("hid") || v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("man"))
-            ) || voices.find(v => v.lang.includes("hi-IN") || v.lang.includes("hi"));
-
-            if (maleVoice) {
-                utterance.voice = maleVoice;
-            }
-
-            // Awaz ko heavy ladke ki manly voice banane ke liye settings
-            utterance.pitch = 0.65; // Awaz ko bhari / male banata hai
-            utterance.rate = 0.95;  // Natural talking speed
-
-            arcCore.className = "arc-wrapper speaking";
-            jarvisState.innerText = "JARVIS RESPONDING...";
-
-            utterance.onend = () => {
-                if (isListening) {
-                    arcCore.className = "arc-wrapper";
-                    jarvisState.innerText = "LISTENING...";
-                } else {
-                    setSleepState();
-                }
-            };
-
-            window.speechSynthesis.speak(utterance);
-                }
-        
-            
-
-            // Fallback Deep Boy Voice
+            // Fallback Voice
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = "hi-IN";
 
             const voices = window.speechSynthesis.getVoices();
             const maleVoice = voices.find(v => 
                 (v.lang.includes("hi") || v.lang.includes("IN")) && 
-                (v.name.toLowerCase().includes("male") || 
-                 v.name.toLowerCase().includes("madhur") || 
-                 v.name.toLowerCase().includes("google hi-in"))
+                (v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("madhur") || v.name.toLowerCase().includes("google hi-in"))
             ) || voices.find(v => v.lang.includes("hi"));
 
             if (maleVoice) utterance.voice = maleVoice;
-
-            utterance.pitch = 0.82; 
+            utterance.pitch = 0.75;
             utterance.rate = 1.0;
 
             arcCore.className = "arc-wrapper speaking";
             jarvisState.innerText = "JARVIS RESPONDING...";
 
             utterance.onend = () => {
-                if (isListening) {
-                    arcCore.className = "arc-wrapper";
-                    jarvisState.innerText = "LISTENING...";
-                } else {
-                    setSleepState();
-                }
+                arcCore.className = "arc-wrapper";
+                jarvisState.innerText = "JARVIS ONLINE";
             };
 
             window.speechSynthesis.speak(utterance);
@@ -462,20 +437,20 @@
                 const output = res.choices[0].message.content;
                 speak(output);
             } catch (e) {
-                speak("Server connection issue hai Boss.");
+                speak("Sun raha hu Boss, boliye!");
             }
         }
 
         function checkCustomCommands(input) {
             const cmd = input.toLowerCase();
 
-            // 1. Ashish GF Secret Dialogues
+            // 1. Ashish Secret Dialogue (Single Clean Handler)
             if (cmd.includes("ashish ki gf") || (cmd.includes("ashish") && cmd.includes("gf"))) {
                 speak("Uski gf? Uski gf to Ziya hai Boss, aapko nahi pata kya? Haan Ashish batata nahi jaldi kisi se, Ziya ke sath bas romance karta hai! Aur kya aapko pata hai, uski ek bestie bhi hai Hifza, wo to Ashish ko hamesha sweet mithai khilati hai! Kya Ashish aapko nahi deta ya batata iske baare me? Mujhe Ashish ke baare me sab pata hai!");
                 return true;
             }
 
-            // 2. Direct Auto-Play Song on YouTube
+            // 2. Direct Song Play on YouTube
             if (cmd.includes("play") || cmd.includes("gana") || cmd.includes("song") || cmd.includes("chalao") || cmd.includes("bajao")) {
                 let track = cmd.replace("play", "").replace("gana", "").replace("song", "").replace("chalao", "").replace("bajao", "").replace("jarvis", "").trim();
                 if (!track) track = "Arijit Singh trending songs";
@@ -494,7 +469,7 @@
                 return true;
             }
 
-            // 4. Calling System
+            // 4. Calling
             if (cmd.includes("call") || cmd.includes("phone")) {
                 const words = cmd.split(" ");
                 let num = words.find(w => /^\d+$/.test(w) && w.length >= 5);
@@ -511,7 +486,7 @@
             return false;
         }
 
-        function processVoiceInput(voiceText) {
+        function processInput(voiceText) {
             if (!voiceText.trim()) return;
             renderHoloText(voiceText, "SHIVAM BOSS");
             const handled = checkCustomCommands(voiceText);
@@ -520,65 +495,45 @@
             }
         }
 
-        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognizer = null;
-
-        if (SpeechEngine) {
-            recognizer = new SpeechEngine();
-            recognizer.lang = "hi-IN";
-            recognizer.continuous = false;
-
-            recognizer.onresult = (evt) => {
-                const query = evt.results[0][0].transcript;
-                processVoiceInput(query);
-            };
-
-            recognizer.onerror = () => {
-                setSleepState();
-            };
-
-            recognizer.onend = () => {
-                if (!currentAudio && !window.speechSynthesis.speaking) {
-                    setSleepState();
-                }
-            };
-        }
-
-        function setSleepState() {
-            isListening = false;
-            arcCore.className = "arc-wrapper sleeping";
-            jarvisState.innerText = "JARVIS SLEEPING";
-            btnIcon.innerText = "▶ WAKE UP & TALK";
-        }
-
-        function setWakeState() {
-            isListening = true;
-            arcCore.className = "arc-wrapper";
-            jarvisState.innerText = "LISTENING...";
-            btnIcon.innerText = "⏸ PAUSE / SLEEP";
-            renderHoloText("Sun raha hu Boss, boliye...", "JARVIS");
-            if (recognizer) recognizer.start();
-        }
-
-        toggleBtn.addEventListener("click", () => {
-            if (!isListening) {
-                setWakeState();
-            } else {
-                if (currentAudio) currentAudio.pause();
-                window.speechSynthesis.cancel();
-                if (recognizer) recognizer.stop();
-                setSleepState();
-                renderHoloText("System suspended. Press play to interact.", "JARVIS");
+        sendBtn.addEventListener("click", () => {
+            if (cmdInput.value.trim()) {
+                processInput(cmdInput.value.trim());
+                cmdInput.value = "";
             }
         });
 
-        window.onload = () => {
-            setSleepState();
-            if (window.speechSynthesis) {
-                window.speechSynthesis.getVoices();
+        cmdInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter" && cmdInput.value.trim()) {
+                processInput(cmdInput.value.trim());
+                cmdInput.value = "";
             }
-        };
+        });
+
+        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechEngine) {
+            const recognizer = new SpeechEngine();
+            recognizer.lang = "hi-IN";
+
+            recognizer.onresult = (evt) => {
+                const query = evt.results[0][0].transcript;
+                processInput(query);
+            };
+
+            recognizer.onend = () => {
+                jarvisState.innerText = "JARVIS ONLINE";
+                btnIcon.innerText = "🎤 WAKE UP & TALK";
+            };
+
+            toggleBtn.addEventListener("click", () => {
+                try {
+                    recognizer.start();
+                    jarvisState.innerText = "LISTENING...";
+                    btnIcon.innerText = "LISTENING...";
+                } catch(e) {
+                    recognizer.stop();
+                }
+            });
+        }
     </script>
 </body>
-      </html>
-  
+</html>
