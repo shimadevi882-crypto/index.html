@@ -355,7 +355,7 @@
             }
         }
 
-        async function speak(text) {
+                async function speak(text) {
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
@@ -363,11 +363,48 @@
             window.speechSynthesis.cancel();
             renderHoloText(text, "JARVIS");
 
-            // ElevenLabs Key checking
-            if (ELEVENLABS_API_KEY && !ELEVENLABS_API_KEY.includes("YAHAN_APNI_ELEVENLABS")) {
+            // Agar ElevenLabs key dali hui hai to realistic boy voice chalega
+            if (ELEVENLABS_API_KEY && !ELEVENLABS_API_KEY.includes("sk_592bfba04e770a42e0033854f35f28eca0cd6eb8afac2ec3")) {
                 const success = await speakWithElevenLabs(text);
                 if (success) return;
             }
+
+            // Android Phone Male Voice Engine
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "hi-IN";
+
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Android aur Chrome ke Male Hindi voice models ko select karna
+            const maleVoice = voices.find(v => 
+                (v.lang.includes("hi") || v.lang.includes("HI")) && 
+                (v.name.includes("hie") || v.name.includes("hid") || v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("man"))
+            ) || voices.find(v => v.lang.includes("hi-IN") || v.lang.includes("hi"));
+
+            if (maleVoice) {
+                utterance.voice = maleVoice;
+            }
+
+            // Awaz ko heavy ladke ki manly voice banane ke liye settings
+            utterance.pitch = 0.65; // Awaz ko bhari / male banata hai
+            utterance.rate = 0.95;  // Natural talking speed
+
+            arcCore.className = "arc-wrapper speaking";
+            jarvisState.innerText = "JARVIS RESPONDING...";
+
+            utterance.onend = () => {
+                if (isListening) {
+                    arcCore.className = "arc-wrapper";
+                    jarvisState.innerText = "LISTENING...";
+                } else {
+                    setSleepState();
+                }
+            };
+
+            window.speechSynthesis.speak(utterance);
+                }
+        
+            
 
             // Fallback Deep Boy Voice
             const utterance = new SpeechSynthesisUtterance(text);
