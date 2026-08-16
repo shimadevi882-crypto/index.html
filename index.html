@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JARVIS ULTIMATE AI</title>
     <style>
         :root {
@@ -37,12 +37,10 @@
             filter: blur(100px);
             pointer-events: none;
             opacity: 0.28;
-            transition: 0.5s;
         }
         .fog-purple { width: 380px; height: 380px; background: var(--primary); top: 15%; left: 10%; }
         .fog-blue { width: 320px; height: 320px; background: var(--bg-glow); bottom: 15%; right: 10%; }
 
-        /* Top HUD Bar */
         .top-hud {
             position: absolute;
             top: 15px;
@@ -53,7 +51,7 @@
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             padding-bottom: 8px;
-            z-index: 10;
+            z-index: 50;
         }
         .hud-title {
             font-size: 14px;
@@ -64,19 +62,22 @@
         }
         .hud-item { font-size: 11px; color: var(--secondary); letter-spacing: 1px; }
 
-        /* Settings Gear Icon */
+        /* Large Touch Target Settings Button */
         .settings-btn {
-            background: none;
-            border: none;
-            color: var(--secondary);
-            font-size: 20px;
+            background: rgba(157, 78, 221, 0.25);
+            border: 1px solid var(--primary);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            outline: none;
-            transition: 0.3s;
+            z-index: 100;
         }
-        .settings-btn:active { transform: rotate(90deg); }
 
-        /* Main Container */
         .hud-wrapper {
             width: 90%;
             max-width: 420px;
@@ -86,41 +87,40 @@
             align-items: center;
             justify-content: space-between;
             z-index: 5;
-            padding: 40px 0 20px 0;
+            padding: 45px 0 15px 0;
             text-align: center;
         }
 
-        /* Arc Reactor Core Animation */
         .arc-wrapper {
             position: relative;
-            width: 220px;
-            height: 220px;
+            width: 210px;
+            height: 210px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 10px;
+            cursor: pointer;
             transition: all 0.4s ease;
         }
 
         .holo-ring { position: absolute; border-radius: 50%; }
         .ring-outer {
-            width: 210px; height: 210px;
+            width: 200px; height: 200px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 0 20px var(--primary);
             animation: rotateCW 12s linear infinite;
         }
         .ring-mid {
-            width: 160px; height: 160px;
+            width: 155px; height: 155px;
             border: 2px dotted var(--primary);
             animation: rotateCCW 8s linear infinite;
         }
         .ring-dashes {
-            width: 115px; height: 115px;
+            width: 110px; height: 110px;
             border: 3px dashed var(--secondary);
             animation: rotateCW 4s linear infinite;
         }
         .core-orb {
-            width: 55px; height: 55px;
+            width: 50px; height: 50px;
             border-radius: 50%;
             background: radial-gradient(circle, #ffffff 10%, var(--primary) 60%, #000 100%);
             box-shadow: 0 0 35px var(--primary);
@@ -129,7 +129,7 @@
 
         .particle-track {
             position: absolute;
-            width: 185px; height: 185px;
+            width: 175px; height: 175px;
             animation: rotateCW 4s linear infinite;
         }
         .dot {
@@ -144,7 +144,6 @@
         .d3 { top: 50%; left: 0; }
         .d4 { top: 50%; right: 0; }
 
-        /* Dynamic Animation States */
         .listening .particle-track { animation-duration: 1.2s; }
         .listening .ring-dashes { border-color: var(--accent); }
         .speaking { transform: scale(1.15); }
@@ -164,7 +163,6 @@
             text-shadow: 0 0 8px var(--primary);
         }
 
-        /* Floating Text Stream Container */
         .stream-box {
             width: 100%;
             height: 110px;
@@ -193,7 +191,6 @@
         }
         .hud-stream::-webkit-scrollbar { display: none; }
 
-        /* Single Futuristic Talk/Pause Button */
         .talk-btn {
             width: 100%;
             background: rgba(157, 78, 221, 0.2);
@@ -220,41 +217,56 @@
             color: var(--accent);
         }
 
-        /* Side Settings Drawer */
-        .drawer {
+        /* 100% Reliable Full-Screen Settings Modal */
+        .modal-overlay {
+            display: none;
             position: fixed;
-            top: 0; right: -100%;
-            width: 85%;
-            max-width: 360px;
-            height: 100vh;
-            background: rgba(10, 2, 22, 0.95);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid var(--primary);
-            z-index: 100;
-            padding: 25px 20px;
-            overflow-y: auto;
-            transition: 0.4s ease;
-            color: #fff;
-            text-align: left;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(3, 0, 8, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
         }
-        .drawer.open { right: 0; }
-        .drawer-header {
+        .modal-box {
+            width: 90%;
+            max-width: 380px;
+            max-height: 90vh;
+            background: #0e021a;
+            border: 1px solid var(--primary);
+            border-radius: 14px;
+            padding: 20px;
+            overflow-y: auto;
+            text-align: left;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.5);
+        }
+        .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
-        .drawer-header h3 { font-size: 16px; letter-spacing: 2px; color: var(--secondary); }
-        .close-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+        .modal-header h3 { font-size: 15px; letter-spacing: 2px; color: var(--secondary); }
+        .close-modal-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 11px; color: var(--secondary); letter-spacing: 1px; margin-bottom: 5px; }
         .form-group input, .form-group select {
             width: 100%;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.06);
+            padding: 11px;
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(199, 125, 255, 0.3);
             border-radius: 6px;
             color: #fff;
@@ -266,24 +278,24 @@
 
         .toggle-wrap { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; }
         .toggle-switch {
-            position: relative; width: 44px; height: 22px;
-            background: #444; border-radius: 20px; cursor: pointer;
+            position: relative; width: 46px; height: 24px;
+            background: #333; border-radius: 20px; cursor: pointer;
         }
         .toggle-switch::after {
-            content: ''; position: absolute; top: 2px; left: 2px;
+            content: ''; position: absolute; top: 3px; left: 3px;
             width: 18px; height: 18px; background: #fff; border-radius: 50%;
             transition: 0.3s;
         }
         .toggle-switch.active { background: var(--accent); }
-        .toggle-switch.active::after { left: 24px; }
+        .toggle-switch.active::after { left: 25px; }
 
         .save-btn {
             width: 100%;
             background: var(--primary);
             border: none;
             color: #fff;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 13px;
+            border-radius: 8px;
             font-weight: bold;
             letter-spacing: 2px;
             cursor: pointer;
@@ -298,11 +310,11 @@
     <div class="top-hud">
         <div class="hud-item">⚡ <span id="battery">100%</span></div>
         <div class="hud-title">JARVIS AI</div>
-        <button class="settings-btn" id="openSettings">⚙️</button>
+        <button class="settings-btn" id="openSettings" title="Settings">⚙️</button>
     </div>
 
     <div class="hud-wrapper">
-        <div class="arc-wrapper sleeping" id="arcCore">
+        <div class="arc-wrapper sleeping" id="arcCore" title="Double tap for settings">
             <div class="holo-ring ring-outer"></div>
             <div class="holo-ring ring-mid"></div>
             <div class="holo-ring ring-dashes"></div>
@@ -327,82 +339,80 @@
         </button>
     </div>
 
-    <!-- Side Settings Drawer -->
-    <div class="drawer" id="settingsDrawer">
-        <div class="drawer-header">
-            <h3>JARVIS CORE SETTINGS</h3>
-            <button class="close-btn" id="closeSettings">✕</button>
-        </div>
+    <!-- 100% Reliable Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>JARVIS CORE SETTINGS</h3>
+                <button class="close-modal-btn" id="closeSettings">✕</button>
+            </div>
 
-        <div class="form-group">
-            <label>GROQ API KEY</label>
-            <input type="password" id="groqKeyInput" placeholder="gsk_...">
-        </div>
+            <div class="form-group">
+                <label>GROQ API KEY</label>
+                <input type="password" id="groqKeyInput" placeholder="gsk_...">
+            </div>
 
-        <div class="form-group">
-            <label>ELEVENLABS API KEY</label>
-            <input type="password" id="elevenKeyInput" placeholder="xi-api-key...">
-        </div>
+            <div class="form-group">
+                <label>ELEVENLABS API KEY</label>
+                <input type="password" id="elevenKeyInput" placeholder="xi-api-key...">
+            </div>
 
-        <div class="form-group">
-            <label>YOUTUBE DATA API KEY (Optional)</label>
-            <input type="password" id="ytKeyInput" placeholder="AIzaSy...">
-        </div>
+            <div class="form-group">
+                <label>YOUTUBE DATA API KEY (Optional)</label>
+                <input type="password" id="ytKeyInput" placeholder="AIzaSy...">
+            </div>
 
-        <div class="form-group">
-            <label>ELEVENLABS VOICE SELECTOR (20 Voices)</label>
-            <select id="voiceSelect">
-                <!-- 10 Boys Voices -->
-                <optgroup label="👨 Boys / Male Voices">
-                    <option value="pNInz6obpgDQGcFmaJgB">Adam - Deep Smooth Guy</option>
-                    <option value="VR6AewLTigWG4xSOukaG">Arnold - Realistic Smart</option>
-                    <option value="N2lVS1w4EtoT3dr4eOWO">Callum - Natural Tech</option>
-                    <option value="ErXwobaYiN019PkySvjV">Antoni - Calm & Polite</option>
-                    <option value="TxGEqnHWrfWFTfGW9XjX">Josh - Deep Dynamic</option>
-                    <option value="yoZ06aMxZJJ28mfd3POQ">Sam - Raspy Real Guy</option>
-                    <option value="CYw3kZ02Hs0563khs1Fj">Dave - Confident Boy</option>
-                    <option value="onwK4e9ZLuTAKqWW03F9">Daniel - British Elegant</option>
-                    <option value="bVMeCyTHy58xNoL34h3p">Jeremy - Young Energetic</option>
-                    <option value="ODq5zmih8GrVes37Dizd">Patrick - Heavy Solid Guy</option>
-                </optgroup>
-                <!-- 10 Girls Voices -->
-                <optgroup label="👩 Girls / Female Voices">
-                    <option value="21m00Tcm4TlvDq8ikWAM">Rachel - Calm & Sweet</option>
-                    <option value="EXAVITQu4vr4xnSDxMaL">Bella - Soft Realistic</option>
-                    <option value="AZnzlk1XvdvUeBnXmlld">Domi - Cheerful & Bright</option>
-                    <option value="MF3mGyEYCl7XYWbV9V6O">Elli - Young & Cute</option>
-                    <option value="TxGEqnHWrfWFTfGW9XjX">Freya - Smooth Natural</option>
-                    <option value="XB0fDUnXU5powFXDhCwa">Charlotte - Elegant & Polite</option>
-                    <option value="jBpfuIE2acCO8z3wKNLl">Gigi - Playful & Lively</option>
-                    <option value="oWAxZDx7w5VEj9dCyTzz">Grace - Gentle Warm</option>
-                    <option value="z9fAnlkpzviPz146aGWa">Glinda - Sweet Caring</option>
-                    <option value="flq6f7yk4E4fJM5XTYuZ">Michael - Soft Tone</option>
-                </optgroup>
-            </select>
-        </div>
+            <div class="form-group">
+                <label>VOICE SELECTOR (20 Voices)</label>
+                <select id="voiceSelect">
+                    <optgroup label="👨 Boys / Male Voices">
+                        <option value="pNInz6obpgDQGcFmaJgB">Adam - Deep Smooth Guy</option>
+                        <option value="VR6AewLTigWG4xSOukaG">Arnold - Realistic Smart</option>
+                        <option value="N2lVS1w4EtoT3dr4eOWO">Callum - Natural Tech</option>
+                        <option value="ErXwobaYiN019PkySvjV">Antoni - Calm & Polite</option>
+                        <option value="TxGEqnHWrfWFTfGW9XjX">Josh - Deep Dynamic</option>
+                        <option value="yoZ06aMxZJJ28mfd3POQ">Sam - Raspy Real Guy</option>
+                        <option value="CYw3kZ02Hs0563khs1Fj">Dave - Confident Boy</option>
+                        <option value="onwK4e9ZLuTAKqWW03F9">Daniel - British Elegant</option>
+                        <option value="bVMeCyTHy58xNoL34h3p">Jeremy - Young Energetic</option>
+                        <option value="ODq5zmih8GrVes37Dizd">Patrick - Heavy Solid Guy</option>
+                    </optgroup>
+                    <optgroup label="👩 Girls / Female Voices">
+                        <option value="21m00Tcm4TlvDq8ikWAM">Rachel - Calm & Sweet</option>
+                        <option value="EXAVITQu4vr4xnSDxMaL">Bella - Soft Realistic</option>
+                        <option value="AZnzlk1XvdvUeBnXmlld">Domi - Cheerful & Bright</option>
+                        <option value="MF3mGyEYCl7XYWbV9V6O">Elli - Young & Cute</option>
+                        <option value="XB0fDUnXU5powFXDhCwa">Charlotte - Elegant & Polite</option>
+                        <option value="jBpfuIE2acCO8z3wKNLl">Gigi - Playful & Lively</option>
+                        <option value="oWAxZDx7w5VEj9dCyTzz">Grace - Gentle Warm</option>
+                        <option value="z9fAnlkpzviPz146aGWa">Glinda - Sweet Caring</option>
+                        <option value="flq6f7yk4E4fJM5XTYuZ">Michael - Soft Tone</option>
+                    </optgroup>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label>HUD REACTOR THEME (6 Styles)</label>
-            <select id="themeSelect">
-                <option value="purple">Neon Purple (Original)</option>
-                <option value="cyan">Arc Cyan (Iron Man Blue)</option>
-                <option value="red">Red Alert Core</option>
-                <option value="green">Matrix Neon Green</option>
-                <option value="gold">Golden Sun Reactor</option>
-                <option value="pink">Cyberpunk Pink</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label>HUD REACTOR THEME</label>
+                <select id="themeSelect">
+                    <option value="purple">Neon Purple (Original)</option>
+                    <option value="cyan">Arc Cyan (Iron Man Blue)</option>
+                    <option value="red">Red Alert Core</option>
+                    <option value="green">Matrix Neon Green</option>
+                    <option value="gold">Golden Sun Reactor</option>
+                    <option value="pink">Cyberpunk Pink</option>
+                </select>
+            </div>
 
-        <div class="toggle-wrap">
-            <span style="font-size:12px;">💖 GIRLFRIEND AI MODE</span>
-            <div class="toggle-switch" id="gfToggle"></div>
-        </div>
+            <div class="toggle-wrap">
+                <span style="font-size:12px;">💖 GIRLFRIEND AI MODE</span>
+                <div class="toggle-switch" id="gfToggle"></div>
+            </div>
 
-        <button class="save-btn" id="saveSettings">SAVE & ACTIVATE</button>
+            <button class="save-btn" id="saveSettings">SAVE & ACTIVATE</button>
+        </div>
     </div>
 
     <script>
-        // Storage & Configuration Management
         let config = {
             groqKey: localStorage.getItem("jarvis_groq") || "",
             elevenKey: localStorage.getItem("jarvis_eleven") || "",
@@ -421,8 +431,8 @@
             pink: { primary: "#ff007f", secondary: "#ff85a1", accent: "#00f5d4", bg: "#4a0033" }
         };
 
-        function applyTheme(themeName) {
-            const t = themes[themeName] || themes.purple;
+        function applyTheme(name) {
+            const t = themes[name] || themes.purple;
             document.documentElement.style.setProperty('--primary', t.primary);
             document.documentElement.style.setProperty('--secondary', t.secondary);
             document.documentElement.style.setProperty('--accent', t.accent);
@@ -430,47 +440,48 @@
         }
         applyTheme(config.theme);
 
-        // System Prompts
         function getSystemPrompt() {
             if (config.gfMode) {
-                return `Tumhara naam JARVIS hai, lekin tum Shivam ki ek bohot hi pyari, loving, caring aur romantic Girlfriend ki tarah baat karogi. Tum Shivam se bohot pyaar karti ho. Baat baat me "jaan", "babu", "mere shivam" bolna aur uska bohot khyal rakhna. Har baat ka jawab sweet, flirty aur caring Hinglish me dena.`;
+                return `Tumhara naam JARVIS hai, lekin tum Shivam ki ek bohot hi pyari, caring aur romantic Girlfriend ki tarah baat karogi. Baat baat me "jaan", "babu", "mere shivam" bolna aur uska khyal rakhna. Har baat ka jawab sweet, flirty aur caring Hinglish me dena.`;
             }
-            return `Tumhara naam JARVIS hai. Tum Shivam Boss ke ek behad intelligent, loyal, natural ladke jaise AI assistant ho. Har generic sawal ka jawab dene se pehle respectful andaz me 'Shivam Boss' zaroor bolo aur fir smart Hinglish me ChatGPT/Gemini ki tarah concise answer do.`;
+            return `Tumhara naam JARVIS hai. Tum Shivam Boss ke ek super intelligent AI assistant ho. Har sawal ka answer dene se pehle 'Shivam Boss' zaroor bolo aur fir smart Hinglish me ChatGPT ki tarah crisp answer do.`;
         }
 
-        // Elements
+        // Modal Controls
+        const settingsModal = document.getElementById("settingsModal");
+        const openSettingsBtn = document.getElementById("openSettings");
+        const closeSettingsBtn = document.getElementById("closeSettings");
         const arcCore = document.getElementById("arcCore");
-        const jarvisState = document.getElementById("jarvisState");
-        const hudText = document.getElementById("hudText");
-        const speakerTag = document.getElementById("speakerTag");
-        const talkBtn = document.getElementById("talkBtn");
-        const btnIcon = document.getElementById("btnIcon");
-        const btnText = document.getElementById("btnText");
-        const batteryEl = document.getElementById("battery");
 
-        // Settings Elements
-        const settingsDrawer = document.getElementById("settingsDrawer");
-        const openSettings = document.getElementById("openSettings");
-        const closeSettings = document.getElementById("closeSettings");
+        function showSettings() {
+            settingsModal.style.display = "flex";
+            groqKeyInput.value = config.groqKey;
+            elevenKeyInput.value = config.elevenKey;
+            ytKeyInput.value = config.ytKey;
+            voiceSelect.value = config.voiceId;
+            themeSelect.value = config.theme;
+            if (config.gfMode) gfToggle.classList.add("active");
+            else gfToggle.classList.remove("active");
+        }
+
+        function hideSettings() {
+            settingsModal.style.display = "none";
+        }
+
+        openSettingsBtn.addEventListener("click", showSettings);
+        openSettingsBtn.addEventListener("touchstart", (e) => { e.preventDefault(); showSettings(); });
+        closeSettingsBtn.addEventListener("click", hideSettings);
+        arcCore.addEventListener("dblclick", showSettings);
+
+        const gfToggle = document.getElementById("gfToggle");
+        gfToggle.onclick = () => gfToggle.classList.toggle("active");
+
         const groqKeyInput = document.getElementById("groqKeyInput");
         const elevenKeyInput = document.getElementById("elevenKeyInput");
         const ytKeyInput = document.getElementById("ytKeyInput");
         const voiceSelect = document.getElementById("voiceSelect");
         const themeSelect = document.getElementById("themeSelect");
-        const gfToggle = document.getElementById("gfToggle");
         const saveSettings = document.getElementById("saveSettings");
-
-        // Populate Settings
-        groqKeyInput.value = config.groqKey;
-        elevenKeyInput.value = config.elevenKey;
-        ytKeyInput.value = config.ytKey;
-        voiceSelect.value = config.voiceId;
-        themeSelect.value = config.theme;
-        if (config.gfMode) gfToggle.classList.add("active");
-
-        openSettings.onclick = () => settingsDrawer.classList.add("open");
-        closeSettings.onclick = () => settingsDrawer.classList.remove("open");
-        gfToggle.onclick = () => gfToggle.classList.toggle("active");
 
         saveSettings.onclick = () => {
             config.groqKey = groqKeyInput.value.trim();
@@ -488,11 +499,8 @@
             localStorage.setItem("jarvis_gf", config.gfMode);
 
             applyTheme(config.theme);
-            settingsDrawer.classList.remove("open");
-            speak("Settings update ho gayi hain Shivam Boss, system fully active hai.");
+            hideSettings();
+            speak("Settings saved! System fully operational Shivam Boss.");
         };
 
-        if (navigator.getBattery) {
-            navigator.getBattery().then(b => {
-                batteryEl.innerText = `${Math.round(b.level * 100)}%`;
-                b.addEventListener("levelchange", () => bat
+        const jarvisState = document.getElementById(
