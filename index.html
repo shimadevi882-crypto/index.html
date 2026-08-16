@@ -3,20 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS HUD AI</title>
-    
+    <title>JARVIS ULTIMATE AI</title>
     <style>
+        :root {
+            --primary: #9d4edd;
+            --secondary: #c77dff;
+            --accent: #00f5d4;
+            --bg-glow: #3a0ca3;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Courier New', Courier, monospace;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background: #030008;
-            color: #c77dff;
-            min-height: 100vh;
+            color: var(--secondary);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -30,109 +37,106 @@
             filter: blur(100px);
             pointer-events: none;
             opacity: 0.28;
+            transition: 0.5s;
         }
-        .fog-purple {
-            width: 380px;
-            height: 380px;
-            background: #9d4edd;
-            top: 20%;
-            left: 10%;
-        }
-        .fog-blue {
-            width: 320px;
-            height: 320px;
-            background: #3a0ca3;
-            bottom: 15%;
-            right: 10%;
-        }
+        .fog-purple { width: 380px; height: 380px; background: var(--primary); top: 15%; left: 10%; }
+        .fog-blue { width: 320px; height: 320px; background: var(--bg-glow); bottom: 15%; right: 10%; }
 
-        .hud-wrapper {
+        /* Top HUD Bar */
+        .top-hud {
+            position: absolute;
+            top: 15px;
             width: 90%;
             max-width: 450px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            z-index: 10;
+        }
+        .hud-title {
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary);
+        }
+        .hud-item { font-size: 11px; color: var(--secondary); letter-spacing: 1px; }
+
+        /* Settings Gear Icon */
+        .settings-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: 20px;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+        .settings-btn:active { transform: rotate(90deg); }
+
+        /* Main Container */
+        .hud-wrapper {
+            width: 90%;
+            max-width: 420px;
+            height: 85vh;
+            display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: space-between;
             z-index: 5;
-            gap: 15px;
+            padding: 40px 0 20px 0;
             text-align: center;
         }
 
-        .top-hud {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            align-items: center;
-            border-bottom: 1px solid rgba(199, 125, 255, 0.25);
-            padding-bottom: 8px;
-        }
-        .hud-title {
-            font-size: 15px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            color: #e0aaff;
-            text-shadow: 0 0 12px #9d4edd;
-        }
-        .hud-item {
-            font-size: 11px;
-            color: #e0aaff;
-            letter-spacing: 1px;
-        }
-
+        /* Arc Reactor Core Animation */
         .arc-wrapper {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 5px 0;
-            transition: all 0.3s ease;
+            margin-top: 10px;
+            transition: all 0.4s ease;
         }
 
-        .holo-ring {
-            position: absolute;
-            border-radius: 50%;
-        }
+        .holo-ring { position: absolute; border-radius: 50%; }
         .ring-outer {
-            width: 190px;
-            height: 190px;
-            border: 2px solid rgba(199, 125, 255, 0.4);
-            box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
-            animation: rotateClockwise 10s linear infinite;
+            width: 210px; height: 210px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px var(--primary);
+            animation: rotateCW 12s linear infinite;
         }
         .ring-mid {
-            width: 145px;
-            height: 145px;
-            border: 2px dotted #9d4edd;
-            animation: rotateCounter 6s linear infinite;
+            width: 160px; height: 160px;
+            border: 2px dotted var(--primary);
+            animation: rotateCCW 8s linear infinite;
         }
         .ring-dashes {
-            width: 105px;
-            height: 105px;
-            border: 3px dashed #c77dff;
-            animation: rotateClockwise 4s linear infinite;
+            width: 115px; height: 115px;
+            border: 3px dashed var(--secondary);
+            animation: rotateCW 4s linear infinite;
         }
         .core-orb {
-            width: 50px;
-            height: 50px;
+            width: 55px; height: 55px;
             border-radius: 50%;
-            background: radial-gradient(circle, #ffffff 10%, #9d4edd 60%, #240046 100%);
-            box-shadow: 0 0 30px #9d4edd;
+            background: radial-gradient(circle, #ffffff 10%, var(--primary) 60%, #000 100%);
+            box-shadow: 0 0 35px var(--primary);
             animation: pulseCore 2s infinite alternate;
         }
 
         .particle-track {
             position: absolute;
-            width: 170px;
-            height: 170px;
-            animation: rotateClockwise 3s linear infinite;
+            width: 185px; height: 185px;
+            animation: rotateCW 4s linear infinite;
         }
         .dot {
             position: absolute;
-            width: 6px;
-            height: 6px;
+            width: 6px; height: 6px;
             background: #ffffff;
-            box-shadow: 0 0 8px #fff, 0 0 15px #c77dff;
+            box-shadow: 0 0 10px #fff, 0 0 15px var(--accent);
             border-radius: 50%;
         }
         .d1 { top: 0; left: 50%; }
@@ -140,100 +144,150 @@
         .d3 { top: 50%; left: 0; }
         .d4 { top: 50%; right: 0; }
 
-        .speaking {
-            transform: scale(1.15);
-        }
-        .speaking .core-orb {
-            box-shadow: 0 0 55px #ffffff, 0 0 80px #9d4edd;
-        }
+        /* Dynamic Animation States */
+        .listening .particle-track { animation-duration: 1.2s; }
+        .listening .ring-dashes { border-color: var(--accent); }
+        .speaking { transform: scale(1.15); }
+        .speaking .particle-track { animation-duration: 0.8s; }
+        .speaking .core-orb { box-shadow: 0 0 65px #fff, 0 0 90px var(--primary); }
+        .sleeping { opacity: 0.45; transform: scale(0.9); }
+        .sleeping .particle-track { animation-play-state: paused; }
 
-        .sleeping {
-            opacity: 0.5;
-            transform: scale(0.9);
-        }
-        .sleeping .particle-track {
-            animation-play-state: paused;
-        }
-
-        @keyframes rotateClockwise { 100% { transform: rotate(360deg); } }
-        @keyframes rotateCounter { 100% { transform: rotate(-360deg); } }
-        @keyframes pulseCore { 0% { transform: scale(0.9); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
+        @keyframes rotateCW { 100% { transform: rotate(360deg); } }
+        @keyframes rotateCCW { 100% { transform: rotate(-360deg); } }
+        @keyframes pulseCore { 0% { transform: scale(0.92); } 100% { transform: scale(1.08); } }
 
         .state-label {
             font-size: 13px;
             letter-spacing: 3px;
-            color: #e0aaff;
-            text-shadow: 0 0 8px #9d4edd;
+            color: #fff;
+            text-shadow: 0 0 8px var(--primary);
         }
 
-        .dialogue-container {
+        /* Floating Text Stream Container */
+        .stream-box {
             width: 100%;
-            min-height: 80px;
-            padding: 12px;
-            text-align: left;
-            background: rgba(25, 5, 59, 0.45);
-            border-radius: 8px;
-            border: 1px solid rgba(157, 78, 221, 0.3);
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            overflow: hidden;
+            padding: 5px 10px;
         }
-        .speaker {
+        .speaker-tag {
             font-size: 11px;
             font-weight: bold;
-            color: #00f5d4;
+            color: var(--accent);
             letter-spacing: 2px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            text-align: left;
         }
         .hud-stream {
             font-size: 13px;
             color: #f3e8ff;
             line-height: 1.5;
+            text-align: left;
+            overflow-y: auto;
+            max-height: 85px;
             word-break: break-word;
         }
+        .hud-stream::-webkit-scrollbar { display: none; }
 
-        .control-panel {
+        /* Single Futuristic Talk/Pause Button */
+        .talk-btn {
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .input-bar {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-        }
-        .input-bar input {
-            flex: 1;
-            padding: 12px;
-            background: rgba(157, 78, 221, 0.15);
-            border: 1px solid #9d4edd;
-            border-radius: 8px;
-            color: #fff;
-            outline: none;
-            font-size: 13px;
-            font-family: inherit;
-        }
-        .input-bar button {
-            padding: 0 16px;
-            background: #9d4edd;
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        .holo-btn {
-            width: 100%;
-            background: rgba(157, 78, 221, 0.25);
-            border: 1px solid #9d4edd;
+            background: rgba(157, 78, 221, 0.2);
+            border: 2px solid var(--primary);
             color: #ffffff;
-            padding: 13px;
-            border-radius: 8px;
+            padding: 16px;
+            border-radius: 12px;
             cursor: pointer;
             letter-spacing: 3px;
-            font-size: 13px;
-            font-weight: bold;
-            box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);
+            font-size: 14px;
+            font-weight: 900;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
             transition: 0.3s ease;
+        }
+        .talk-btn:active { transform: scale(0.96); }
+        .talk-btn.active {
+            background: rgba(0, 245, 212, 0.2);
+            border-color: var(--accent);
+            box-shadow: 0 0 25px var(--accent);
+            color: var(--accent);
+        }
+
+        /* Side Settings Drawer */
+        .drawer {
+            position: fixed;
+            top: 0; right: -100%;
+            width: 85%;
+            max-width: 360px;
+            height: 100vh;
+            background: rgba(10, 2, 22, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--primary);
+            z-index: 100;
+            padding: 25px 20px;
+            overflow-y: auto;
+            transition: 0.4s ease;
+            color: #fff;
+            text-align: left;
+        }
+        .drawer.open { right: 0; }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        .drawer-header h3 { font-size: 16px; letter-spacing: 2px; color: var(--secondary); }
+        .close-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; color: var(--secondary); letter-spacing: 1px; margin-bottom: 5px; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            border-radius: 6px;
+            color: #fff;
+            outline: none;
+            font-size: 12px;
+            font-family: inherit;
+        }
+        .form-group select option { background: #120024; color: #fff; }
+
+        .toggle-wrap { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; }
+        .toggle-switch {
+            position: relative; width: 44px; height: 22px;
+            background: #444; border-radius: 20px; cursor: pointer;
+        }
+        .toggle-switch::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 18px; height: 18px; background: #fff; border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch.active { background: var(--accent); }
+        .toggle-switch.active::after { left: 24px; }
+
+        .save-btn {
+            width: 100%;
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -241,14 +295,14 @@
     <div class="fog-purple"></div>
     <div class="fog-blue"></div>
 
-    <div class="hud-wrapper">
-        <div class="top-hud">
-            <div class="hud-item"><span class="hud-icon">⚡</span> <span id="battery">100%</span></div>
-            <div class="hud-title">JARVIS SYSTEM</div>
-            <div class="hud-item"><span class="hud-icon">⏱</span> <span id="clock">00:00:00</span></div>
-        </div>
+    <div class="top-hud">
+        <div class="hud-item">⚡ <span id="battery">100%</span></div>
+        <div class="hud-title">JARVIS AI</div>
+        <button class="settings-btn" id="openSettings">⚙️</button>
+    </div>
 
-        <div class="arc-wrapper" id="arcCore">
+    <div class="hud-wrapper">
+        <div class="arc-wrapper sleeping" id="arcCore">
             <div class="holo-ring ring-outer"></div>
             <div class="holo-ring ring-mid"></div>
             <div class="holo-ring ring-dashes"></div>
@@ -261,279 +315,184 @@
             <div class="core-orb"></div>
         </div>
 
-        <div class="state-label" id="jarvisState">JARVIS ONLINE</div>
+        <div class="state-label" id="jarvisState">JARVIS SLEEPING</div>
 
-        <div class="dialogue-container">
-            <p id="speakerTag" class="speaker">JARVIS</p>
-            <p id="hudText" class="hud-stream">System Online Boss! Type karein ya Voice button dabayein.</p>
+        <div class="stream-box">
+            <p id="speakerTag" class="speaker-tag">JARVIS</p>
+            <p id="hudText" class="hud-stream">System suspended. Tap TALK button to activate.</p>
         </div>
 
-        <div class="control-panel">
-            <div class="input-bar">
-                <input type="text" id="cmdInput" placeholder="Sawal pucho ya gana bolo...">
-                <button id="sendBtn">SEND</button>
-            </div>
-            <button id="toggleBtn" class="holo-btn">
-                <span id="btnIcon" class="btn-text">🎤 WAKE UP & TALK</span>
-            </button>
+        <button id="talkBtn" class="talk-btn">
+            <span id="btnIcon">🎤</span> <span id="btnText">WAKE UP & TALK</span>
+        </button>
+    </div>
+
+    <!-- Side Settings Drawer -->
+    <div class="drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h3>JARVIS CORE SETTINGS</h3>
+            <button class="close-btn" id="closeSettings">✕</button>
         </div>
+
+        <div class="form-group">
+            <label>GROQ API KEY</label>
+            <input type="password" id="groqKeyInput" placeholder="gsk_...">
+        </div>
+
+        <div class="form-group">
+            <label>ELEVENLABS API KEY</label>
+            <input type="password" id="elevenKeyInput" placeholder="xi-api-key...">
+        </div>
+
+        <div class="form-group">
+            <label>YOUTUBE DATA API KEY (Optional)</label>
+            <input type="password" id="ytKeyInput" placeholder="AIzaSy...">
+        </div>
+
+        <div class="form-group">
+            <label>ELEVENLABS VOICE SELECTOR (20 Voices)</label>
+            <select id="voiceSelect">
+                <!-- 10 Boys Voices -->
+                <optgroup label="👨 Boys / Male Voices">
+                    <option value="pNInz6obpgDQGcFmaJgB">Adam - Deep Smooth Guy</option>
+                    <option value="VR6AewLTigWG4xSOukaG">Arnold - Realistic Smart</option>
+                    <option value="N2lVS1w4EtoT3dr4eOWO">Callum - Natural Tech</option>
+                    <option value="ErXwobaYiN019PkySvjV">Antoni - Calm & Polite</option>
+                    <option value="TxGEqnHWrfWFTfGW9XjX">Josh - Deep Dynamic</option>
+                    <option value="yoZ06aMxZJJ28mfd3POQ">Sam - Raspy Real Guy</option>
+                    <option value="CYw3kZ02Hs0563khs1Fj">Dave - Confident Boy</option>
+                    <option value="onwK4e9ZLuTAKqWW03F9">Daniel - British Elegant</option>
+                    <option value="bVMeCyTHy58xNoL34h3p">Jeremy - Young Energetic</option>
+                    <option value="ODq5zmih8GrVes37Dizd">Patrick - Heavy Solid Guy</option>
+                </optgroup>
+                <!-- 10 Girls Voices -->
+                <optgroup label="👩 Girls / Female Voices">
+                    <option value="21m00Tcm4TlvDq8ikWAM">Rachel - Calm & Sweet</option>
+                    <option value="EXAVITQu4vr4xnSDxMaL">Bella - Soft Realistic</option>
+                    <option value="AZnzlk1XvdvUeBnXmlld">Domi - Cheerful & Bright</option>
+                    <option value="MF3mGyEYCl7XYWbV9V6O">Elli - Young & Cute</option>
+                    <option value="TxGEqnHWrfWFTfGW9XjX">Freya - Smooth Natural</option>
+                    <option value="XB0fDUnXU5powFXDhCwa">Charlotte - Elegant & Polite</option>
+                    <option value="jBpfuIE2acCO8z3wKNLl">Gigi - Playful & Lively</option>
+                    <option value="oWAxZDx7w5VEj9dCyTzz">Grace - Gentle Warm</option>
+                    <option value="z9fAnlkpzviPz146aGWa">Glinda - Sweet Caring</option>
+                    <option value="flq6f7yk4E4fJM5XTYuZ">Michael - Soft Tone</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>HUD REACTOR THEME (6 Styles)</label>
+            <select id="themeSelect">
+                <option value="purple">Neon Purple (Original)</option>
+                <option value="cyan">Arc Cyan (Iron Man Blue)</option>
+                <option value="red">Red Alert Core</option>
+                <option value="green">Matrix Neon Green</option>
+                <option value="gold">Golden Sun Reactor</option>
+                <option value="pink">Cyberpunk Pink</option>
+            </select>
+        </div>
+
+        <div class="toggle-wrap">
+            <span style="font-size:12px;">💖 GIRLFRIEND AI MODE</span>
+            <div class="toggle-switch" id="gfToggle"></div>
+        </div>
+
+        <button class="save-btn" id="saveSettings">SAVE & ACTIVATE</button>
     </div>
 
     <script>
-        // ================= CONFIGURATION KEYS =================
-        const GROQ_API_KEY = "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"; 
-        const ELEVENLABS_API_KEY = "sk_592bfba04e770a42e0033854f35f28eca0cd6eb8afac2ec3"; 
-        const ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"; // Deep natural male voice (Adam)
+        // Storage & Configuration Management
+        let config = {
+            groqKey: localStorage.getItem("jarvis_groq") || "",
+            elevenKey: localStorage.getItem("jarvis_eleven") || "",
+            ytKey: localStorage.getItem("jarvis_yt") || "",
+            voiceId: localStorage.getItem("jarvis_voice") || "pNInz6obpgDQGcFmaJgB",
+            theme: localStorage.getItem("jarvis_theme") || "purple",
+            gfMode: localStorage.getItem("jarvis_gf") === "true"
+        };
 
-        let isListening = false;
-        let currentAudio = null;
-        let currentTypingInterval = null;
+        const themes = {
+            purple: { primary: "#9d4edd", secondary: "#c77dff", accent: "#00f5d4", bg: "#3a0ca3" },
+            cyan: { primary: "#00d4ff", secondary: "#90e0ef", accent: "#0077b6", bg: "#03045e" },
+            red: { primary: "#ff0055", secondary: "#ff758f", accent: "#ffb703", bg: "#590d22" },
+            green: { primary: "#00f5d4", secondary: "#70e000", accent: "#38b000", bg: "#004b23" },
+            gold: { primary: "#ffb703", secondary: "#ffe49e", accent: "#fb8500", bg: "#3d2b00" },
+            pink: { primary: "#ff007f", secondary: "#ff85a1", accent: "#00f5d4", bg: "#4a0033" }
+        };
 
-        const JARVIS_SYSTEM_PROMPT = `
-        Tumhara naam JARVIS hai. Tum Shivam ke ek behad powerful PC style AI assistant ho.
-        Tumhara bolne ka andaz polite, intelligent, loyal, natural aur friendly ladke jaisa hai.
-        Har generic sawal ka jawab ChatGPT ya Gemini ki tarah smart instantly Hinglish me do.
-        `;
+        function applyTheme(themeName) {
+            const t = themes[themeName] || themes.purple;
+            document.documentElement.style.setProperty('--primary', t.primary);
+            document.documentElement.style.setProperty('--secondary', t.secondary);
+            document.documentElement.style.setProperty('--accent', t.accent);
+            document.documentElement.style.setProperty('--bg-glow', t.bg);
+        }
+        applyTheme(config.theme);
 
+        // System Prompts
+        function getSystemPrompt() {
+            if (config.gfMode) {
+                return `Tumhara naam JARVIS hai, lekin tum Shivam ki ek bohot hi pyari, loving, caring aur romantic Girlfriend ki tarah baat karogi. Tum Shivam se bohot pyaar karti ho. Baat baat me "jaan", "babu", "mere shivam" bolna aur uska bohot khyal rakhna. Har baat ka jawab sweet, flirty aur caring Hinglish me dena.`;
+            }
+            return `Tumhara naam JARVIS hai. Tum Shivam Boss ke ek behad intelligent, loyal, natural ladke jaise AI assistant ho. Har generic sawal ka jawab dene se pehle respectful andaz me 'Shivam Boss' zaroor bolo aur fir smart Hinglish me ChatGPT/Gemini ki tarah concise answer do.`;
+        }
+
+        // Elements
         const arcCore = document.getElementById("arcCore");
         const jarvisState = document.getElementById("jarvisState");
         const hudText = document.getElementById("hudText");
         const speakerTag = document.getElementById("speakerTag");
-        const toggleBtn = document.getElementById("toggleBtn");
+        const talkBtn = document.getElementById("talkBtn");
         const btnIcon = document.getElementById("btnIcon");
-        const cmdInput = document.getElementById("cmdInput");
-        const sendBtn = document.getElementById("sendBtn");
-        const clockEl = document.getElementById("clock");
+        const btnText = document.getElementById("btnText");
         const batteryEl = document.getElementById("battery");
 
-        setInterval(() => {
-            const now = new Date();
-            clockEl.innerText = now.toTimeString().split(" ")[0];
-        }, 1000);
+        // Settings Elements
+        const settingsDrawer = document.getElementById("settingsDrawer");
+        const openSettings = document.getElementById("openSettings");
+        const closeSettings = document.getElementById("closeSettings");
+        const groqKeyInput = document.getElementById("groqKeyInput");
+        const elevenKeyInput = document.getElementById("elevenKeyInput");
+        const ytKeyInput = document.getElementById("ytKeyInput");
+        const voiceSelect = document.getElementById("voiceSelect");
+        const themeSelect = document.getElementById("themeSelect");
+        const gfToggle = document.getElementById("gfToggle");
+        const saveSettings = document.getElementById("saveSettings");
+
+        // Populate Settings
+        groqKeyInput.value = config.groqKey;
+        elevenKeyInput.value = config.elevenKey;
+        ytKeyInput.value = config.ytKey;
+        voiceSelect.value = config.voiceId;
+        themeSelect.value = config.theme;
+        if (config.gfMode) gfToggle.classList.add("active");
+
+        openSettings.onclick = () => settingsDrawer.classList.add("open");
+        closeSettings.onclick = () => settingsDrawer.classList.remove("open");
+        gfToggle.onclick = () => gfToggle.classList.toggle("active");
+
+        saveSettings.onclick = () => {
+            config.groqKey = groqKeyInput.value.trim();
+            config.elevenKey = elevenKeyInput.value.trim();
+            config.ytKey = ytKeyInput.value.trim();
+            config.voiceId = voiceSelect.value;
+            config.theme = themeSelect.value;
+            config.gfMode = gfToggle.classList.contains("active");
+
+            localStorage.setItem("jarvis_groq", config.groqKey);
+            localStorage.setItem("jarvis_eleven", config.elevenKey);
+            localStorage.setItem("jarvis_yt", config.ytKey);
+            localStorage.setItem("jarvis_voice", config.voiceId);
+            localStorage.setItem("jarvis_theme", config.theme);
+            localStorage.setItem("jarvis_gf", config.gfMode);
+
+            applyTheme(config.theme);
+            settingsDrawer.classList.remove("open");
+            speak("Settings update ho gayi hain Shivam Boss, system fully active hai.");
+        };
 
         if (navigator.getBattery) {
             navigator.getBattery().then(b => {
-                const setBat = () => { batteryEl.innerText = `${Math.round(b.level * 100)}%`; };
-                setBat();
-                b.addEventListener("levelchange", setBat);
-            });
-        }
-
-        function renderHoloText(text, speaker = "JARVIS") {
-            speakerTag.innerText = speaker;
-            hudText.innerText = "";
-            if (currentTypingInterval) clearInterval(currentTypingInterval);
-
-            let i = 0;
-            currentTypingInterval = setInterval(() => {
-                if (i < text.length) {
-                    hudText.innerText += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(currentTypingInterval);
-                }
-            }, 15);
-        }
-
-        async function speakWithElevenLabs(text) {
-            try {
-                const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`, {
-                    method: "POST",
-                    headers: {
-                        "xi-api-key": ELEVENLABS_API_KEY,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        text: text,
-                        model_id: "eleven_multilingual_v2",
-                        voice_settings: {
-                            stability: 0.45,
-                            similarity_boost: 0.85
-                        }
-                    })
-                });
-
-                if (!response.ok) throw new Error("ElevenLabs failed");
-
-                const blob = await response.blob();
-                const audioUrl = URL.createObjectURL(blob);
-                currentAudio = new Audio(audioUrl);
-                
-                arcCore.className = "arc-wrapper speaking";
-                jarvisState.innerText = "JARVIS RESPONDING...";
-
-                currentAudio.onended = () => {
-                    arcCore.className = "arc-wrapper";
-                    jarvisState.innerText = "JARVIS ONLINE";
-                };
-
-                await currentAudio.play();
-                return true;
-            } catch (err) {
-                return false;
-            }
-        }
-
-        async function speak(text) {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-            }
-            window.speechSynthesis.cancel();
-            renderHoloText(text, "JARVIS");
-
-            // ElevenLabs check
-            if (ELEVENLABS_API_KEY && !ELEVENLABS_API_KEY.includes("sk_592bfba04e770a42e0033854f35f28eca0cd6eb8afac2ec3")) {
-                const success = await speakWithElevenLabs(text);
-                if (success) return;
-            }
-
-            // Fallback Voice
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "hi-IN";
-
-            const voices = window.speechSynthesis.getVoices();
-            const maleVoice = voices.find(v => 
-                (v.lang.includes("hi") || v.lang.includes("IN")) && 
-                (v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("madhur") || v.name.toLowerCase().includes("google hi-in"))
-            ) || voices.find(v => v.lang.includes("hi"));
-
-            if (maleVoice) utterance.voice = maleVoice;
-            utterance.pitch = 0.75;
-            utterance.rate = 1.0;
-
-            arcCore.className = "arc-wrapper speaking";
-            jarvisState.innerText = "JARVIS RESPONDING...";
-
-            utterance.onend = () => {
-                arcCore.className = "arc-wrapper";
-                jarvisState.innerText = "JARVIS ONLINE";
-            };
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        async function queryGroqAI(query) {
-            jarvisState.innerText = "THINKING...";
-            try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${GROQ_API_KEY}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: "llama-3.3-70b-versatile",
-                        temperature: 0.6,
-                        max_tokens: 300,
-                        messages: [
-                            { role: "system", content: JARVIS_SYSTEM_PROMPT },
-                            { role: "user", content: query }
-                        ]
-                    })
-                });
-
-                const res = await response.json();
-                const output = res.choices[0].message.content;
-                speak(output);
-            } catch (e) {
-                speak("Sun raha hu Boss, boliye!");
-            }
-        }
-
-        function checkCustomCommands(input) {
-            const cmd = input.toLowerCase();
-
-            // 1. Ashish Secret Dialogue (Single Clean Handler)
-            if (cmd.includes("ashish ki gf") || (cmd.includes("ashish") && cmd.includes("gf"))) {
-                speak("Uski gf? Uski gf to Ziya hai Boss, aapko nahi pata kya? Haan Ashish batata nahi jaldi kisi se, Ziya ke sath bas romance karta hai! Aur kya aapko pata hai, uski ek bestie bhi hai Hifza, wo to Ashish ko hamesha sweet mithai khilati hai! Kya Ashish aapko nahi deta ya batata iske baare me? Mujhe Ashish ke baare me sab pata hai!");
-                return true;
-            }
-
-            // 2. Direct Song Play on YouTube
-            if (cmd.includes("play") || cmd.includes("gana") || cmd.includes("song") || cmd.includes("chalao") || cmd.includes("bajao")) {
-                let track = cmd.replace("play", "").replace("gana", "").replace("song", "").replace("chalao", "").replace("bajao", "").replace("jarvis", "").trim();
-                if (!track) track = "Arijit Singh trending songs";
-                
-                speak(`Thik hai Boss, ${track} YouTube par chala raha hu.`);
-                setTimeout(() => {
-                    window.location.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(track)}`;
-                }, 2200);
-                return true;
-            }
-
-            // 3. Open Gallery
-            if (cmd.includes("gallery") || cmd.includes("photos") || cmd.includes("photo")) {
-                speak("Gallery open kar raha hu Boss.");
-                window.open("content://media/internal/images/media", "_blank");
-                return true;
-            }
-
-            // 4. Calling
-            if (cmd.includes("call") || cmd.includes("phone")) {
-                const words = cmd.split(" ");
-                let num = words.find(w => /^\d+$/.test(w) && w.length >= 5);
-                if (num) {
-                    speak(`Number ${num} par call laga raha hu.`);
-                    window.open(`tel:${num}`, "_self");
-                } else {
-                    speak("Calling dialer open kar raha hu.");
-                    window.open("tel:", "_self");
-                }
-                return true;
-            }
-
-            return false;
-        }
-
-        function processInput(voiceText) {
-            if (!voiceText.trim()) return;
-            renderHoloText(voiceText, "SHIVAM BOSS");
-            const handled = checkCustomCommands(voiceText);
-            if (!handled) {
-                queryGroqAI(voiceText);
-            }
-        }
-
-        sendBtn.addEventListener("click", () => {
-            if (cmdInput.value.trim()) {
-                processInput(cmdInput.value.trim());
-                cmdInput.value = "";
-            }
-        });
-
-        cmdInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter" && cmdInput.value.trim()) {
-                processInput(cmdInput.value.trim());
-                cmdInput.value = "";
-            }
-        });
-
-        const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechEngine) {
-            const recognizer = new SpeechEngine();
-            recognizer.lang = "hi-IN";
-
-            recognizer.onresult = (evt) => {
-                const query = evt.results[0][0].transcript;
-                processInput(query);
-            };
-
-            recognizer.onend = () => {
-                jarvisState.innerText = "JARVIS ONLINE";
-                btnIcon.innerText = "🎤 WAKE UP & TALK";
-            };
-
-            toggleBtn.addEventListener("click", () => {
-                try {
-                    recognizer.start();
-                    jarvisState.innerText = "LISTENING...";
-                    btnIcon.innerText = "LISTENING...";
-                } catch(e) {
-                    recognizer.stop();
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+                batteryEl.innerText = `${Math.round(b.level * 100)}%`;
+                b.addEventListener("levelchange", () => bat
